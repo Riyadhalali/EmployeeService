@@ -85,18 +85,36 @@ namespace EmployeeService.Controllers
         }
 
         //------------------------------PUT Method----------------------------------
-        public void Put(int id,[FromBody]Employee employee)
+        public HttpResponseMessage Put(int id,[FromBody]Employee employee)
         {
-            using (EmployeeAPIEntities entities = new EmployeeAPIEntities())
+            try
             {
-                var entity = entities.Employees.FirstOrDefault(e => e.ID == id);
-                entity.FirstName = employee.FirstName;
-                entity.Lastname = employee.Lastname;
-                entity.Gender = employee.Gender;
-                entity.Salary = employee.Salary;
-                entities.SaveChanges();
+                using (EmployeeAPIEntities entities = new EmployeeAPIEntities())
+                {
+                    var entity = entities.Employees.FirstOrDefault(e => e.ID == id);
+                    if (entity==null)
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Employee With ID " + id.ToString() + "Not Found");
+
+                    }
+                    else
+                    {
+                        entity.FirstName = employee.FirstName;
+                        entity.Lastname = employee.Lastname;
+                        entity.Gender = employee.Gender;
+                        entity.Salary = employee.Salary;
+                        entities.SaveChanges();
+                        return Request.CreateResponse(HttpStatusCode.OK, "Updated Successfully");
+                    }
+                   
+                }
             }
-        }
+            catch(Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
+            }
+           
 
 
     }
