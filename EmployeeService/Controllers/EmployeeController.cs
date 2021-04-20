@@ -84,6 +84,20 @@ namespace EmployeeService.Controllers
            
         }
 
+        //------------------------------PUT Method----------------------------------
+        public void Put(int id,[FromBody]Employee employee)
+        {
+            using (EmployeeAPIEntities entities = new EmployeeAPIEntities())
+            {
+                var entity = entities.Employees.FirstOrDefault(e => e.ID == id);
+                entity.FirstName = employee.FirstName;
+                entity.Lastname = employee.Lastname;
+                entity.Gender = employee.Gender;
+                entity.Salary = employee.Salary;
+                entities.SaveChanges();
+            }
+        }
+
 
     }
 }
